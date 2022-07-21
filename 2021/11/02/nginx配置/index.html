@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Nginx 配置 | 第八十三</title>
+    <meta name="generator" content="VuePress 1.6.0">
+    <link rel="alternate" type="application/rss+xml" href="https://cknksnd.github.io/blog/rss.xml/rss.xml" title="第八十三 RSS Feed">
+    <meta name="description" content="将项目生成的静态文件夹dist拷贝到服务器，使用Nginx作为web服务器
+
+配置文件是 /usr/local/nginx/conf/nginx.conf
+
+查找Nginx安装路径
+ps -ef | grep nginx
+这里获得的安装路径是 /usr/sbin/nginx
+获得安装路径后，查找配置文件路径
+/usr/sbin/ng ...">
+    <link rel="preload" href="/blog/assets/css/0.styles.dd9a0f72.css" as="style"><link rel="preload" href="/blog/assets/js/app.f7c45e10.js" as="script"><link rel="preload" href="/blog/assets/js/6.2245e778.js" as="script"><link rel="preload" href="/blog/assets/js/3.c84bc4bf.js" as="script"><link rel="preload" href="/blog/assets/js/13.9ea2cee5.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.2827304e.js"><link rel="prefetch" href="/blog/assets/js/11.bf495ebc.js"><link rel="prefetch" href="/blog/assets/js/12.969b0d78.js"><link rel="prefetch" href="/blog/assets/js/14.7f1d9b58.js"><link rel="prefetch" href="/blog/assets/js/15.1a8d4fcf.js"><link rel="prefetch" href="/blog/assets/js/16.cef4558d.js"><link rel="prefetch" href="/blog/assets/js/17.d2284ee5.js"><link rel="prefetch" href="/blog/assets/js/18.4e81d1ed.js"><link rel="prefetch" href="/blog/assets/js/19.8e9a4d17.js"><link rel="prefetch" href="/blog/assets/js/20.2cd4ce13.js"><link rel="prefetch" href="/blog/assets/js/21.9a420a16.js"><link rel="prefetch" href="/blog/assets/js/22.321f455f.js"><link rel="prefetch" href="/blog/assets/js/23.d1fdfa73.js"><link rel="prefetch" href="/blog/assets/js/24.bce9c2c0.js"><link rel="prefetch" href="/blog/assets/js/25.7c22c03f.js"><link rel="prefetch" href="/blog/assets/js/26.448643b6.js"><link rel="prefetch" href="/blog/assets/js/27.9ef757c6.js"><link rel="prefetch" href="/blog/assets/js/4.9850d613.js"><link rel="prefetch" href="/blog/assets/js/5.03fe8d03.js"><link rel="prefetch" href="/blog/assets/js/7.f0b97f50.js"><link rel="prefetch" href="/blog/assets/js/8.1970db06.js"><link rel="prefetch" href="/blog/assets/js/9.c208805c.js"><link rel="prefetch" href="/blog/assets/js/vuejs-paginate.9c4b22ef.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.dd9a0f72.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="vuepress-theme-blog__global-layout"><section id="header-wrapper"><header id="header"><div class="header-wrapper"><div class="title"><a href="/blog/" class="nav-link home-link">第八十三 </a></div> <div class="header-right-wrap"><ul class="nav"><li class="nav-item"><a href="/blog/" class="nav-link">Blog</a></li><li class="nav-item"><a href="/blog/tag/" class="nav-link">Tags</a></li></ul> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <a href="/rss.xml" class="feed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></div></div></header></section> <div id="mobile-header"><div class="mobile-header-bar"><div class="mobile-header-title"><a href="/blog/" class="nav-link mobile-home-link">第八十三 </a> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div> <div class="mobile-menu-wrapper"><hr class="menu-divider"> <ul class="mobile-nav"><li class="mobile-nav-item"><a href="/blog/" class="nav-link">Blog</a></li><li class="mobile-nav-item"><a href="/blog/tag/" class="nav-link">Tags</a></li> <li class="mobile-nav-item"><a href="/rss.xml" class="feed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></li></ul></div></div></div> <div class="content-wrapper"><div id="vuepress-theme-blog__post-layout"><article itemscope="itemscope" itemtype="https://schema.org/BlogPosting" class="vuepress-blog-theme-content"><header><h1 itemprop="name headline" class="post-title">
+        Nginx 配置
+      </h1> <div class="post-meta"><div itemprop="publisher author" itemtype="http://schema.org/Person" itemscope="itemscope" class="post-meta-author"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg> <span itemprop="name">Kendall Cai</span> <span itemprop="address">   in Amoy</span></div> <div class="post-meta-date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <time pubdate itemprop="datePublished" datetime="2021-11-02T00:00:00.000Z">
+      2021-11-02
+    </time></div> <ul itemprop="keywords" class="post-meta-tags"><li class="post-tag" data-v-42ccfcd5><a href="/blog/tag/Nginx" data-v-42ccfcd5><span data-v-42ccfcd5>Nginx</span></a></li></ul></div></header> <div itemprop="articleBody" class="content__default"><p>将项目生成的静态文件夹<code>dist</code>拷贝到服务器，使用Nginx作为web服务器</p> <p>配置文件是 <code>/usr/local/nginx/conf/nginx.conf</code></p> <p>查找Nginx安装路径</p> <div class="language- extra-class"><pre class="language-text"><code>ps -ef | grep nginx
+# 这里获得的安装路径是 /usr/sbin/nginx
+</code></pre></div><p>获得安装路径后，查找配置文件路径</p> <div class="language- extra-class"><pre class="language-text"><code>/usr/sbin/nginx -t
+# 获得如下输出
+nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
+nginx: configuration file /etc/nginx/nginx.conf test is successful
+</code></pre></div><p>配置Nginx</p> <div class="language- extra-class"><pre class="language-text"><code>#关键配置
+server {
+    listen          80;
+    server_name     localhost;
+    
+    charset         utf-8
+    
+    location / {
+        root        /path/to/server/dist/directory;
+        index       index.html  index.htm;
+        # 防止刷新页面时出现404
+        try_files   $uri    $uri/   /index.html;
+    }
+    
+    # 前端请求接口
+    location /api {
+        # 后端服务器的ip和端口号
+        proxy_pass http://ip:port;
+        
+        # 重写Vue项目中配置的/api代理
+        rewrite &quot;^/api/(.*)$&quot; /$1 break;
+    }
+}
+</code></pre></div><p>配置完之后重启Nginx服务器</p> <div class="language- extra-class"><pre class="language-text"><code>/usr/sbin/nginx -s reload
+</code></pre></div><h2 id="vue项目配置nginx遇到的坑"><a href="#vue项目配置nginx遇到的坑" class="header-anchor">#</a> Vue项目配置nginx遇到的坑</h2> <p>Vue项目中，在vue.config.js中为解决跨域问题配置了向后端请求的代理：</p> <div class="language-JavaScript extra-class"><pre class="language-javascript"><code># vue<span class="token punctuation">.</span>config<span class="token punctuation">.</span>js 文件
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    devServer<span class="token operator">:</span> <span class="token punctuation">{</span>
+        port<span class="token operator">:</span> <span class="token number">5555</span><span class="token punctuation">,</span>
+        proxy<span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token string">&quot;/api&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+                target<span class="token operator">:</span> <span class="token string">&quot;http://localhost:9090&quot;</span><span class="token punctuation">,</span>
+                pathRewrite<span class="token operator">:</span> <span class="token punctuation">{</span>
+                    <span class="token string">&quot;^/api&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>这里配置了 <code>/api</code> 代理访问到 <code>http://localhost:9090</code></p> <p>比如，我们真正要访问的接口是 <code>http://localhost:9090/category/list</code>，
+如果没有编写 <code>pathRewrite</code>，那么Vue会访问 <code>http://localhost:9090/api/category/list</code>。</p> <p><strong>在部署到nginx时，也需要进行代理地址重写</strong>。</p> <h2 id="nginx配置代理"><a href="#nginx配置代理" class="header-anchor">#</a> Nginx配置代理</h2> <div class="language- extra-class"><pre class="language-text"><code>    # 前端请求接口
+    location /api {
+        # 后端服务器的ip和端口号
+        proxy_pass http://ip:port;
+        
+        # 重写Vue项目中配置的/api代理
+        rewrite &quot;^/api/(.*)$&quot; /$1 break;
+    }
+</code></pre></div><p><strong>proxy_pass</strong>：反向代理，代理到指定的ip和端口</p> <p><strong>rewrite</strong> 代理地址重写</p> <div class="language- extra-class"><pre class="language-text"><code>rewrite &quot;匹配路径的正则表达式&quot;  重写后的路径 [指令];
+</code></pre></div><p>rewrite路径重写：</p> <ul><li><code>&quot;/api/(.*)$&quot;</code> 用了分组语法<code>(.*)</code>，把<code>/api</code>以后的部分当作一组。</li> <li><code>/$1</code> 重写的匹配路径，<code>$1</code>引用前面正则表达式匹配到的分组（组编号从1开始也就是<code>/api</code>）,即<code>/api</code>后面的所有。这样的新路径就是除去<code>/api/</code>以外的所有，达到去除<code>/api</code>前缀的目的。</li> <li>break: 指令。常用指令有两个：last、break
+<ul><li>last: 重写路径结束后，将得到的路径重新进行一次路径匹配。</li> <li>break：重写路径结束后，不重新进行路径匹配。</li></ul></li></ul> <p><strong>参考:</strong> <a href="https://blog.csdn.net/weixin_34267123/article/details/91504901?spm=1001.2101.3001.6650.1&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.essearch_pc_relevant&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1.essearch_pc_relevant" target="_blank" rel="noopener noreferrer">Nginx实现路径重写rewrite指令<svg xmlns="http://www.w3.org/2000/svg" aria-labelledby="outbound-link-title" role="img" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><title id="outbound-link-title">(opens new window)</title> <path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></p></div> <footer><!----> <hr> <!----></footer></article> <div class="sticker vuepress-toc"><div class="vuepress-toc-item vuepress-toc-h2 active"><a href="#vue项目配置nginx遇到的坑" title="Vue项目配置nginx遇到的坑">Vue项目配置nginx遇到的坑</a></div><div class="vuepress-toc-item vuepress-toc-h2"><a href="#nginx配置代理" title="Nginx配置代理">Nginx配置代理</a></div></div></div></div> <footer class="footer" data-v-fdbf4940><div class="footer-left-wrap" data-v-fdbf4940><ul class="contact" data-v-fdbf4940></ul></div> <div class="footer-right-wrap" data-v-fdbf4940><ul class="copyright" data-v-fdbf4940><li class="copyright-item" data-v-fdbf4940><a href="/blog/2021/11/02/nginx%E9%85%8D%E7%BD%AE/.html" class="nav-link" data-v-fdbf4940>Kendall Cai © 2022</a></li></ul></div></footer></div><div class="global-ui"></div></div>
+    <script src="/blog/assets/js/app.f7c45e10.js" defer></script><script src="/blog/assets/js/6.2245e778.js" defer></script><script src="/blog/assets/js/3.c84bc4bf.js" defer></script><script src="/blog/assets/js/13.9ea2cee5.js" defer></script>
+  </body>
+</html>

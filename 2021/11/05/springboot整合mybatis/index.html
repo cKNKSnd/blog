@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Springboot整合MyBatis | 第八十三</title>
+    <meta name="generator" content="VuePress 1.6.0">
+    <link rel="alternate" type="application/rss+xml" href="https://cknksnd.github.io/blog/rss.xml/rss.xml" title="第八十三 RSS Feed">
+    <meta name="description" content="
+
+最佳实践，定义通用DAO接口，利用泛型实现Service的通用方法的实现，避免了重复编写同样的逻辑代码。
+
+但是在很多复杂工程中，最好是定义多种DTO（Data Transfer Object）用于后端和前端的数据映射，里面包含的数据可以是多个DAO字段的集合，也可以是从多个DAO中提取出的几个字段。然后针对DTO进行Service的编写。
+
+概念
+
+DAO - Data Acc ...">
+    <link rel="preload" href="/blog/assets/css/0.styles.dd9a0f72.css" as="style"><link rel="preload" href="/blog/assets/js/app.f7c45e10.js" as="script"><link rel="preload" href="/blog/assets/js/6.2245e778.js" as="script"><link rel="preload" href="/blog/assets/js/3.c84bc4bf.js" as="script"><link rel="preload" href="/blog/assets/js/14.7f1d9b58.js" as="script"><link rel="prefetch" href="/blog/assets/js/10.2827304e.js"><link rel="prefetch" href="/blog/assets/js/11.bf495ebc.js"><link rel="prefetch" href="/blog/assets/js/12.969b0d78.js"><link rel="prefetch" href="/blog/assets/js/13.9ea2cee5.js"><link rel="prefetch" href="/blog/assets/js/15.1a8d4fcf.js"><link rel="prefetch" href="/blog/assets/js/16.cef4558d.js"><link rel="prefetch" href="/blog/assets/js/17.d2284ee5.js"><link rel="prefetch" href="/blog/assets/js/18.4e81d1ed.js"><link rel="prefetch" href="/blog/assets/js/19.8e9a4d17.js"><link rel="prefetch" href="/blog/assets/js/20.2cd4ce13.js"><link rel="prefetch" href="/blog/assets/js/21.9a420a16.js"><link rel="prefetch" href="/blog/assets/js/22.321f455f.js"><link rel="prefetch" href="/blog/assets/js/23.d1fdfa73.js"><link rel="prefetch" href="/blog/assets/js/24.bce9c2c0.js"><link rel="prefetch" href="/blog/assets/js/25.7c22c03f.js"><link rel="prefetch" href="/blog/assets/js/26.448643b6.js"><link rel="prefetch" href="/blog/assets/js/27.9ef757c6.js"><link rel="prefetch" href="/blog/assets/js/4.9850d613.js"><link rel="prefetch" href="/blog/assets/js/5.03fe8d03.js"><link rel="prefetch" href="/blog/assets/js/7.f0b97f50.js"><link rel="prefetch" href="/blog/assets/js/8.1970db06.js"><link rel="prefetch" href="/blog/assets/js/9.c208805c.js"><link rel="prefetch" href="/blog/assets/js/vuejs-paginate.9c4b22ef.js">
+    <link rel="stylesheet" href="/blog/assets/css/0.styles.dd9a0f72.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div id="vuepress-theme-blog__global-layout"><section id="header-wrapper"><header id="header"><div class="header-wrapper"><div class="title"><a href="/blog/" class="nav-link home-link">第八十三 </a></div> <div class="header-right-wrap"><ul class="nav"><li class="nav-item"><a href="/blog/" class="nav-link">Blog</a></li><li class="nav-item"><a href="/blog/tag/" class="nav-link">Tags</a></li></ul> <div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <a href="/rss.xml" class="feed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></div></div></header></section> <div id="mobile-header"><div class="mobile-header-bar"><div class="mobile-header-title"><a href="/blog/" class="nav-link mobile-home-link">第八十三 </a> <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></div> <div class="mobile-menu-wrapper"><hr class="menu-divider"> <ul class="mobile-nav"><li class="mobile-nav-item"><a href="/blog/" class="nav-link">Blog</a></li><li class="mobile-nav-item"><a href="/blog/tag/" class="nav-link">Tags</a></li> <li class="mobile-nav-item"><a href="/rss.xml" class="feed"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a></li></ul></div></div></div> <div class="content-wrapper"><div id="vuepress-theme-blog__post-layout"><article itemscope="itemscope" itemtype="https://schema.org/BlogPosting" class="vuepress-blog-theme-content"><header><h1 itemprop="name headline" class="post-title">
+        Springboot整合MyBatis
+      </h1> <div class="post-meta"><div itemprop="publisher author" itemtype="http://schema.org/Person" itemscope="itemscope" class="post-meta-author"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-navigation"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg> <span itemprop="name">Kendall Cai</span> <span itemprop="address">   in Amoy</span></div> <div class="post-meta-date"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> <time pubdate itemprop="datePublished" datetime="2021-11-05T00:00:00.000Z">
+      2021-11-05
+    </time></div> <ul itemprop="keywords" class="post-meta-tags"><li class="post-tag" data-v-42ccfcd5><a href="/blog/tag/Java" data-v-42ccfcd5><span data-v-42ccfcd5>Java</span></a></li><li class="post-tag" data-v-42ccfcd5><a href="/blog/tag/Springboot" data-v-42ccfcd5><span data-v-42ccfcd5>Springboot</span></a></li><li class="post-tag" data-v-42ccfcd5><a href="/blog/tag/MyBatis" data-v-42ccfcd5><span data-v-42ccfcd5>MyBatis</span></a></li></ul></div></header> <div itemprop="articleBody" class="content__default"><h2 id="service-层"><a href="#service-层" class="header-anchor">#</a> Service 层</h2> <p>最佳实践，定义通用DAO接口，利用泛型实现Service的通用方法的实现，避免了重复编写同样的逻辑代码。</p> <p>但是在很多复杂工程中，最好是定义多种DTO（Data Transfer Object）用于后端和前端的数据映射，里面包含的数据可以是多个DAO字段的集合，也可以是从多个DAO中提取出的几个字段。然后针对DTO进行Service的编写。</p> <p><strong>概念</strong></p> <ul><li>DAO - Data Access Object 用于后端和数据库的数据映射和传输。</li> <li>DTO - Data Transfer Object 用于后端和前端的数据映射和传输，一般是多个DAO字段的合集或者经过处理过的字段。按需定义字段，尽量少，减少不必要的字段。</li></ul> <p><strong>创建的文件：</strong></p> <ul><li><p><code>entity/SysLog.java</code> 举例用的实体</p></li> <li><p><code>dao/SysLogDao.java</code> 举例用的MyBatis动态代理mapper，implements了自定义的<code>Mapper&lt;Model, Ky&gt;</code>接口</p></li> <li><p><code>util/Mapper.java</code> 定义所有DAO共同使用的Mapper接口</p></li> <li><p><code>service/IService.java</code> 定义通用接口，其他的所有基础服务类接口都extends这个接口</p></li> <li><p><code>service/impl/BaseService.java</code> 定义通用接口抽象实现，其他的所有基础服务实现类都extends这个接口，再implements基础服务接口</p></li> <li><p><code>service/SysLogService.java</code> 举例用的基础服务接口</p></li> <li><p><code>service/SysLogServiceImpl.java</code> 举例用的基础服务实现类</p></li></ul> <h3 id="syslog-java"><a href="#syslog-java" class="header-anchor">#</a> SysLog.java</h3> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SysLog</span> <span class="token keyword">implements</span> <span class="token class-name">Serializable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token class-name">Long</span> id<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> ip<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">Date</span> createBy<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> remark<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> operateUrl<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token class-name">String</span> operateBy<span class="token punctuation">;</span>
+    
+    <span class="token comment">// getter and setter</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="syslogdao-java"><a href="#syslogdao-java" class="header-anchor">#</a> SysLogDao.java</h3> <ul><li><code>implements Mapper&lt;Model, Ky&gt;</code> 接口，就不需要再定义通用的数据库访问操作方法</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">SysLogDao</span> <span class="token keyword">extends</span> <span class="token class-name">Mapper</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SysLog</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="mapper-java"><a href="#mapper-java" class="header-anchor">#</a> Mapper.java</h3> <ul><li>自定义的DAO(即MyBatis里的mapper动态代理对象)访问通用接口</li> <li>定义DAO通用的基础方法</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">/**
+ * 自定义的DAO(即MyBatis里的mapper动态代理对象)访问通用接口
+ *
+ * @param &lt;Model&gt; 不是Model类，是泛型，指代实体模型(Entity)
+ * @param &lt;Ky&gt; 主键
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">Mapper</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">int</span> <span class="token function">deleteByPrimaryKey</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">insert</span><span class="token punctuation">(</span><span class="token class-name">Model</span> record<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">insertSelective</span><span class="token punctuation">(</span><span class="token class-name">Model</span> record<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token class-name">Model</span> <span class="token function">selectByPrimaryKey</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> id<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">updateByPrimaryKeySelective</span><span class="token punctuation">(</span><span class="token class-name">Model</span> record<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">updateByPrimaryKey</span><span class="token punctuation">(</span><span class="token class-name">Model</span> record<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="iservice-java"><a href="#iservice-java" class="header-anchor">#</a> IService.java</h3> <ul><li>定义通用接口</li> <li>基础通用服务implements这个接口</li> <li>其他的所有<strong>基础服务类接口</strong>都extends这个接口</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">/**
+ * 通用Service接口
+ * 
+ * @param &lt;Model&gt; 不是Model类，是泛型，指代实体模型(Entity)
+ * @param &lt;Ky&gt; 主键
+ */</span>
+<span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">IService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token class-name">Model</span> <span class="token function">selectByKey</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">delete</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">updateAll</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">int</span> <span class="token function">updateNotNull</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="baseservice-java"><a href="#baseservice-java" class="header-anchor">#</a> BaseService.java</h3> <ul><li>定义通用接口抽象实现</li> <li>其他的所有<strong>基础服务实现类</strong>都extends这个接口，再implements基础服务接口</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token comment">/**
+ * 通用Service
+ * 
+ * @param &lt;Model&gt; 不是Model类，是泛型，指代实体模型(Entity)
+ * @param &lt;Ky&gt; 主键
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">BaseService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">IService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Autowired</span>
+    <span class="token keyword">protected</span> <span class="token class-name">Mapper</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> mapper<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token class-name">Mapper</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">Model</span><span class="token punctuation">,</span> <span class="token class-name">Ky</span><span class="token punctuation">&gt;</span></span> <span class="token function">getMapper</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token class-name">Model</span> <span class="token function">selectByKey</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">.</span><span class="token function">selectByPrimaryKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">save</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">.</span><span class="token function">insert</span><span class="token punctuation">(</span>entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">delete</span><span class="token punctuation">(</span><span class="token class-name">Ky</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">.</span><span class="token function">deleteByPrimaryKey</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">updateAll</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">.</span><span class="token function">updateByPrimaryKey</span><span class="token punctuation">(</span>entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">int</span> <span class="token function">updateNotNull</span><span class="token punctuation">(</span><span class="token class-name">Model</span> entity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mapper<span class="token punctuation">.</span><span class="token function">updateByPrimaryKeySelective</span><span class="token punctuation">(</span>entity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="syslogservice-java"><a href="#syslogservice-java" class="header-anchor">#</a> SysLogService.java</h3> <ul><li>基础服务类接口</li> <li>继承<code>IService&lt;Model, Ky&gt;</code></li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">SysLogService</span> <span class="token keyword">extends</span> <span class="token class-name">IService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SysLog</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> <span class="token punctuation">{</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="syslogserviceimpl-java"><a href="#syslogserviceimpl-java" class="header-anchor">#</a> SysLogServiceImpl.java</h3> <ul><li>基础服务实现类</li> <li>继承 <code>BaseService&lt;Model,Ky&gt;</code></li> <li><code>implements</code> 基础服务类接口</li> <li>可以增加其他服务方法，本案例不提供</li></ul> <div class="language-java extra-class"><pre class="language-java"><code><span class="token annotation punctuation">@Service</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">SysLogServiceImpl</span> <span class="token keyword">extends</span> <span class="token class-name">BaseService</span><span class="token generics"><span class="token punctuation">&lt;</span><span class="token class-name">SysLog</span><span class="token punctuation">,</span> <span class="token class-name">Long</span><span class="token punctuation">&gt;</span></span> <span class="token keyword">implements</span> <span class="token class-name">SysLogService</span> <span class="token punctuation">{</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer><!----> <hr> <!----></footer></article> <div class="sticker vuepress-toc"><div class="vuepress-toc-item vuepress-toc-h2 active"><a href="#service-层" title="Service 层">Service 层</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#syslog-java" title="SysLog.java">SysLog.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#syslogdao-java" title="SysLogDao.java">SysLogDao.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#mapper-java" title="Mapper.java">Mapper.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#iservice-java" title="IService.java">IService.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#baseservice-java" title="BaseService.java">BaseService.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#syslogservice-java" title="SysLogService.java">SysLogService.java</a></div><div class="vuepress-toc-item vuepress-toc-h3"><a href="#syslogserviceimpl-java" title="SysLogServiceImpl.java">SysLogServiceImpl.java</a></div></div></div></div> <footer class="footer" data-v-fdbf4940><div class="footer-left-wrap" data-v-fdbf4940><ul class="contact" data-v-fdbf4940></ul></div> <div class="footer-right-wrap" data-v-fdbf4940><ul class="copyright" data-v-fdbf4940><li class="copyright-item" data-v-fdbf4940><a href="/blog/2021/11/05/springboot%E6%95%B4%E5%90%88mybatis/.html" class="nav-link" data-v-fdbf4940>Kendall Cai © 2022</a></li></ul></div></footer></div><div class="global-ui"></div></div>
+    <script src="/blog/assets/js/app.f7c45e10.js" defer></script><script src="/blog/assets/js/6.2245e778.js" defer></script><script src="/blog/assets/js/3.c84bc4bf.js" defer></script><script src="/blog/assets/js/14.7f1d9b58.js" defer></script>
+  </body>
+</html>
